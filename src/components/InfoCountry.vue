@@ -91,7 +91,7 @@ export default {
       type: String,
       // required: true,
       default: function () {
-        this.$router.push("/");
+        this.$router.push("/restcountry/");
         return "";
       },
     },
