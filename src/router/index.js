@@ -4,8 +4,13 @@ import InfoCountry from "../components/InfoCountry";
 
 export default new VueRouter({
   routes: [
-    { path: "/", name: "main", component: Content },
-    { path: "/InfoCountry", component: InfoCountry, name: "info", props: true },
+    { path: "/restcountry/", name: "main", component: Content },
+    {
+      path: "restcountry/InfoCountry",
+      component: InfoCountry,
+      name: "info",
+      props: true,
+    },
   ],
   mode: "history",
 });
