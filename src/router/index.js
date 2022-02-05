@@ -6,7 +6,7 @@ export default new VueRouter({
   routes: [
     { path: "/restcountry/", name: "main", component: Content },
     {
-      path: "restcountry/InfoCountry",
+      path: "/restcountry/InfoCountry",
       component: InfoCountry,
       name: "info",
       props: true,
