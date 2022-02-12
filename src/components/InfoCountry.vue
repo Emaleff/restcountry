@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="getCurrentCountry">
+  <div class="container" v-if="open">
     <router-link :to="{ name: 'main' }" class="back">
       <svg
         width="19"
@@ -18,47 +18,50 @@
     </router-link>
     <div class="country">
       <div class="country__flag">
-        <img :src="getCurrentCountry.flags.png" alt="" />
+        <img :src="currentCountry.flags.png" alt="" />
       </div>
       <div class="country__text">
         <div class="country__name">
-          {{ getCurrentCountry.name }}
+          {{ currentCountry.name.common }}
         </div>
         <div class="country__words">
           <div class="country__word">
             <div class="country__word-item">
-              Native Name: {{ getCurrentCountry.nativeName }}
+              Native Name: {{ currentCountry.name.official }}
             </div>
             <div class="country__word-item">
-              Population: {{ getCurrentCountry.population }}
+              Population: {{ currentCountry.population }}
             </div>
             <div class="country__word-item">
-              Region: {{ getCurrentCountry.region }}
+              Region: {{ currentCountry.region }}
             </div>
             <div class="country__word-item">
               Sub Region:
-              {{ getCurrentCountry.subregion }}
+              {{ currentCountry.subregion }}
             </div>
             <div class="country__word-item">
-              Capital: {{ getCurrentCountry.capital }}
+              Capital: {{ currentCountry.capital[0] }}
             </div>
           </div>
           <div class="country__word">
             <div class="country__word-item">
-              Top Level Domain: {{ getCurrentCountry.topLevelDomain[0] }}
+              Top Level Domain: {{ currentCountry.tld[0] }}
             </div>
             <div class="country__word-item">
-              Currencies: {{ getCurrentCountry.currencies[0].code }}
+              Currencies: {{ Object.keys(currentCountry.currencies)[0] }}
             </div>
             <div class="country__word-item">
-              Languages: {{ getCurrentCountry.languages[0].name }}
+              Languages:
+              <span v-for="lang in currentCountry.languages" :key="lang">
+                {{ lang }}</span
+              >
             </div>
           </div>
         </div>
-        <div class="country__borders" v-if="getCurrentCountry.borders">
+        <div class="country__borders" v-if="currentCountry.borders">
           <span class="country__border-title"> Border Countries: </span>
           <span
-            v-for="(border, idx) in getCurrentCountry.borders"
+            v-for="(border, idx) in currentCountry.borders"
             :key="idx"
             class="country__border-item"
           >
@@ -68,47 +71,83 @@
       </div>
     </div>
   </div>
+  <div class="loader" v-else>
+    <div class="lds-ripple">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { mapMutations, mapActions, mapGetters } from "vuex";
 export default {
-  name: "InfoCountry",
   data() {
     return {
-      infoCountryResp: {},
+      currentCountry: {},
+      open: false,
     };
   },
-  computed: {
-    infoCountry() {
-      let response = this.infoCountryResp[0];
-      return response;
-    },
-    ...mapGetters(["getCurrentCountry"]),
+  async created() {
+    const response = await fetch(
+      `https://restcountries.com/v3.1/name/${this.country}`
+    );
+    let infoCountry = await response.json();
+    this.currentCountry = infoCountry[0];
+    this.open = true;
   },
+  name: "InfoCountry",
   props: {
     country: {
       type: String,
-      // required: true,
       default: function () {
-        this.$router.push("/restcountry/");
+        this.$router.push("/");
         return "";
       },
     },
   },
-  methods: {
-    ...mapMutations(["updateCurrentCountry"]),
-    ...mapActions(["fetchCurrentCountry"]),
-    ...mapGetters,
-  },
-  async created() {
-    this.updateCurrentCountry(this.country);
-    this.fetchCurrentCountry(this.country);
-  },
+  methods: {},
 };
 </script>
 
 <style scoped>
+.loader {
+  margin-top: 100px;  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid #cef;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 28px;
+    left: 28px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: -1px;
+    left: -1px;
+    width: 58px;
+    height: 58px;
+    opacity: 0;
+  }
+}
 .back {
   display: block;
   text-decoration: none;
@@ -187,6 +226,9 @@ export default {
   font-family: NunitoSans;
   font-size: 16px;
   line-height: 32px;
+}
+.country__word-item span {
+  font-family: NunitoSans;
 }
 .country__borders {
   margin-top: 70px;

@@ -26,7 +26,6 @@ export default {
   name: "Header",
   props: {
     isLightTheme: {
-      type: Boolean,
       required: true,
     },
   },

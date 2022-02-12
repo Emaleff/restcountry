@@ -1,8 +1,6 @@
 <template>
   <div id="app" :class="{ isLightTheme: isLightTheme }">
     <Header :isLightTheme="isLightTheme" @changeTheme="changeTheme" />
-    <!-- <Actions />
-    <ListCountries /> -->
     <router-view></router-view>
   </div>
 </template>
@@ -13,20 +11,25 @@ import Header from "./components/Header";
 
 export default {
   name: "App",
-  async created() {
-    this.fetchCountries();
-  },
   data() {
     return {
-      isLightTheme: false,
+      isLightTheme: "",
     };
   },
+  async created() {
+    this.fetchCountries();
+    let theme = localStorage.getItem("theme");
+    if (theme === null || theme === "false") {
+      theme = false;
+    } else theme = true;
+    this.isLightTheme = theme;
+  },
   components: { Header },
-  computed: {},
   methods: {
     ...mapActions(["fetchCountries"]),
     changeTheme() {
       this.isLightTheme = !this.isLightTheme;
+      localStorage.setItem("theme", this.isLightTheme);
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <router-link
-    :to="{ name: 'info', params: { country: country.name.common } }"
+    :to="{ name: 'info', params: { country: country.name.official } }"
     class="item"
     v-if="country"
   >
@@ -24,6 +24,7 @@
 
 <script>
 export default {
+
   name: "CountryItem",
   props: {
     country: {
@@ -45,6 +46,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   text-decoration: none;
+  transition: 0.2s;
 }
 .isLightTheme .item {
   background: #ffffff;
@@ -52,6 +54,9 @@ export default {
 }
 .item:hover {
   cursor: pointer;
+  box-shadow: 0px 30px 40px rgba(0, 0, 0, 0.0532439);
+  transform: scale(1.04);
+  transition: 0.4s;
 }
 .item__img {
   width: 100%;

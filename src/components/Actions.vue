@@ -1,8 +1,8 @@
 <template>
   <div class="actions">
     <div class="container actions__container">
-      <InputCountry />
-      <SelectContinent />
+      <InputCountry @onInput="onInput" />
+      <SelectContinent @onSelect="onSelect" />
     </div>
   </div>
 </template>
@@ -15,6 +15,14 @@ export default {
   components: {
     InputCountry,
     SelectContinent,
+  },
+  methods: {
+    onInput(data) {
+      this.$emit("onInput", data);
+    },
+    onSelect(data){
+            this.$emit("onSelect", data);
+    }
   },
 };
 </script>
