@@ -63,7 +63,7 @@ export default {
   cursor: pointer;
 }
 @media screen and (max-width: 760px) {
-  .select {
+  .select__wrapp {
     margin-top: 40px;
   }
 }

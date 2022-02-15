@@ -1,13 +1,17 @@
 <template>
   <div class="list">
     <div class="container list__container">
-      <div class="loader" v-if="listCountries.length === 0"></div>
+      <!-- <div class="loader" v-if="listCountries.length === 0"></div> -->
+      <div class="loader" v-if="!isLoading"></div>
       <CountryItem
         v-for="(country, idx) in listCountries"
         :key="idx"
         :country="country"
       />
     </div>
+    <h1 class="isEmpty" v-if="isLoading && listCountries.length === 0">
+      Список пуст )
+    </h1>
   </div>
 </template>
 
@@ -36,16 +40,23 @@ export default {
   },
   computed: {
     ...mapGetters(["getCountries"]),
-
-    listCountries() {
+    isLoading() {
+      let isLoading = false;
+      if (this.getCountries.length > 0) {
+        isLoading = true;
+      }
+      return isLoading;
+    },
+    listCountries() { 
       let listCountries = this.getCountries
         .filter((country) => {
-          return country.region.toLowerCase().includes(this.selectData);
+          return country.name.common
+            .toLowerCase()
+            .includes(this.inputData.toLowerCase());
         })
         .filter((country) => {
-          return country.name.common.toLowerCase().includes(this.inputData);
+          return country.region.toLowerCase().includes(this.selectData);
         });
-
       return listCountries;
     },
   },
@@ -53,6 +64,10 @@ export default {
 </script>
 
 <style scoped>
+.isEmpty {
+  text-align: center;
+  margin-top: 50px;
+}
 .loader {
   font-size: 10px; /* 1em */
   width: 8em;
